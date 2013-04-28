@@ -14,6 +14,12 @@ import javax.servlet.http.HttpSession;
 
 import com.entity.Users;
 
+/**
+ * 基本的url拦截。 
+ * 	判断在用户未登陆d情况禁止访问受限资源
+ * @author zxf
+ *
+ */
 public class UrlFilter implements Filter{
 	private FilterConfig filterConfig = null;
 
