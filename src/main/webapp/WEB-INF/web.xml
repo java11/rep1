@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<welcome-file-list>
+		<welcome-file>/app/login.jsp</welcome-file>
+	</welcome-file-list>
+	
+	<!-- spring上下文加载 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:applicationContext*.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+
+	<filter>
+		<filter-name>urlFilter</filter-name>
+		<filter-class>com.action.Interceptor.UrlFilter</filter-class>
+		<init-param>
+			<param-name>denyPath</param-name>
+			<param-value>/app</param-value>
+		</init-param>
+		<init-param>
+			<param-name>loginJsp</param-name>
+			<param-value>/app/login.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>accessdenyJsp</param-name>
+			<param-value>/common/error/access_deny.jsp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>strutsNameSpace</param-name>
+			<param-value>/common/error/access_deny.jsp</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>urlFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- struts2过滤器加载 -->
+	<filter>
+		<filter-name>struts2</filter-name>
+		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>struts2</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<servlet>
+		<servlet-name>appInit</servlet-name>
+		<servlet-class>com.action.impl.AppInit</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+
+<!-- 	<error-page>
+		<error-code>404</error-code>
+		<location>/pages/error/404.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/pages/error/500.jsp</location>
+	</error-page> -->
+
+	
+</web-app>

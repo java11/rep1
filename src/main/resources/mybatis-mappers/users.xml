@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.interfaces.UsersDao">
+	
+    
+    
+	<select id="getUserByName" parameterType="Users" resultType="Users" >
+		select * from users where username=#{username}
+	</select>
+
+	<select id="get" parameterType="String" resultType="Users">
+		select * from users where userid=#{id}
+	</select>
+
+	<select id="findUserByRole" parameterType="String" resultType="Users">
+		select distinct u.* from users u , roles r , users_roles ur where
+		u.userid=ur.userid and ur.roleid=r.roleid and r.roleid in
+		<foreach collection="array" item="rolesid" open="(" separator=","
+			close=")">
+			#{rolesid}
+ 		</foreach>
+	</select>
+
+
+</mapper>

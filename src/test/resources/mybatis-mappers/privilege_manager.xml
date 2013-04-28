@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.interfaces.PrivilegesManagerDao">
+
+	<select id="getPriOfUser" resultType="UsersResourse">
+		select distinct d.* from users a, users_roles b, roles_privilege c, privilege d
+		where a.userid=b.userid and b.roleid=c.roleid and c.priid=d.priid and
+		a.userid=#{uid} order by parentCode,ordernum asc
+	</select>
+	
+	<select id="getAll" resultType="UsersResourse">
+		select * from privilege order by parentCode,ordernum asc
+	</select>
+
+	<select id="getPriOfRole" resultType="UsersResourse">
+		select distinct d.* from roles_privilege c, privilege d
+		where c.priid=d.priid and c.roleid in
+		<foreach collection="array" item="rolesid" open="(" separator=","
+			close=")">
+			#{rolesid}
+ 		</foreach>
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"
+    "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.ui.theme" value="simple" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.multipart.saveDir" value="/attached" />
+<!-- 	<constant name="struts.action.extension" value="do" /> -->
+	<!-- 上传文件临时文件位置 -->
+	<constant name="struts.multipart.maxSize" value="1000000000" />
+	<package name="mystruts" extends="struts-default" namespace="/">
+		<interceptors>
+			<!-- 登录验证拦截器 -->
+			<interceptor name="authority"
+				class="com.action.Interceptor.AuthorityInterceptor" />
+			<interceptor-stack name="default">
+				<interceptor-ref name="exception">
+					<param name="logEnabled">true</param>
+					<param name="logLevel">
+						warn</param>
+				</interceptor-ref>
+				<interceptor-ref name="authority">
+					<param name="excludeMethods">login</param>
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="default"></default-interceptor-ref>
+
+
+		<global-results>
+			<result name="login">/login.jsp</result>
+			<result name="access_deny">/pages/error/access_deny.jsp</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>
+		</global-exception-mappings>
+		
+		<!-- 通用配置action: inner -->
+		<action name="*_*" class="{1}Action" method="{2}">
+			<result name="success" >/${redirectPage}</result>
+			<result name="success_redirect" type="redirect">/${redirectPage}</result>
+		</action>
+		
+	</package>
+	
+	<!-- 通用配置action: outer , 自此配置的action不做权限拦截-->
+	<package name="base" extends="mystruts" namespace="/base">
+		<action name="*_*" class="{1}Action" method="{2}">
+			<result name="success" >/${redirectPage}</result>
+			<result name="success_redirect" type="redirect">/${redirectPage}</result>
+		</action>
+	</package>
+</struts>

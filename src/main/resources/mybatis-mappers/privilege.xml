@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper 
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.interfaces.PrivilegesDao">
+
+	<insert id="save" parameterType="Privileges" useGeneratedKeys="true" keyProperty="priid">
+		insert into privilege (priname, parentcode, type, url, ordernum) values(#{priname}, #{parentcode}, #{type}, #{url}, #{ordernum})
+	</insert>
+	
+	<update id="update" parameterType="Privileges">
+		update privilege set priname=#{priname}, url=#{url}, ordernum=#{ordernum}, type=#{type} where priid=#{priid}
+	</update>
+	
+	<delete id="remove" parameterType="String">
+		delete from privilege where priid=#{priid}
+	</delete>
+	
+	<delete id="batchRemove" parameterType="String">
+		delete from privilege where priid in 
+		<foreach collection="array" item="priid" open="(" separator=","
+			close=")">
+			#{priid}
+ 		</foreach>
+	</delete>
+  
+</mapper>

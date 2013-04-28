@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<!-- 属性文件读入 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:component-scan base-package="com.dao.impl,com.service.impl,com.action.impl,com.core.cache" />
+
+	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
+		<property name="driver">
+			<value>${jdbc.driverClassName}</value>
+		</property>
+		<property name="driverUrl">
+			<value>${jdbc.url}</value>
+		</property>
+		<property name="user">
+			<value>${jdbc.username}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.password}</value>
+		</property>
+		<property name="alias">
+			<value>app_pool</value>
+		</property>
+		<property name="testAfterUse">
+			<value>true</value>
+		</property>
+		<!-- proxool测试sql语句 -->
+		<property name="houseKeepingTestSql">
+			<value>select 1 from dual</value>
+		</property>
+		<!-- 最少保持的空闲连接数 -->
+		<property name="prototypeCount">
+			<value>5</value>
+		</property>
+		<!-- 允许最大连接数,超过了这个连接，再有请求时，就排在队列中等候 -->
+		<property name="maximumConnectionCount">
+			<value>100</value>
+		</property>
+		<!-- 最小连接数 -->
+		<property name="minimumConnectionCount">
+			<value>10</value>
+		</property>
+		<!-- 连接最大活动时间 30分钟 -->
+		<property name="maximumActiveTime">
+			<value>1800000</value>
+		</property>
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="mapperLocations" value="classpath:mybatis-mappers/*.xml" />
+		<!-- <property name="configLocation" value="classpath:mybatis-config.xml" 
+			/> -->
+		<property name="typeAliasesPackage" value="com.entity" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- 事务管理器(在service层面上实现事务管理) -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" isolation="DEFAULT" />
+			<tx:method name="create*" propagation="REQUIRED" isolation="DEFAULT" />
+			<tx:method name="update*" propagation="REQUIRED" isolation="DEFAULT" />
+			<tx:method name="delete*" propagation="REQUIRED" isolation="DEFAULT" />
+			<tx:method name="remove*" propagation="REQUIRED" isolation="DEFAULT" />
+			<tx:method name="batch*" propagation="REQUIRED" isolation="DEFAULT" />
+			<tx:method name="load*" propagation="REQUIRED" isolation="DEFAULT"
+				read-only="true" />
+			<tx:method name="get*" propagation="REQUIRED" isolation="DEFAULT"
+				read-only="true" />
+			<tx:method name="find*" propagation="REQUIRED" isolation="DEFAULT"
+				read-only="true" />
+			<!-- 如果没有对应事务策略,按以下处理 -->
+			<tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- aop配置 -->
+	<aop:config>
+		<!-- 定义切入点,aspectj表达式 -->
+		<aop:pointcut id="txPointcut" expression="execution(* *..*Service.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+	</aop:config>
+
+	
+	
+	
+	
+		<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation">
+			<value>classpath:ehcache.xml</value>
+		</property>
+	</bean>
+
+	<bean id="methodCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<ref local="cacheManager" />
+		</property>
+		<property name="cacheName">
+			<value>ehcache1</value>
+		</property>
+	</bean>
+
+	<bean id="methodCacheInterceptor" class="com.core.cache.MethodCacheInterceptor">
+		<property name="cache">
+			<ref local="methodCache" />
+		</property>
+	</bean>
+	<bean id="methodCacheAfterAdvice" class="com.core.cache.MethodCacheAfterAdvice">
+		<property name="cache">
+			<ref local="methodCache" />
+		</property>
+	</bean>
+	<bean id="methodCachePointCut"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice">
+			<ref local="methodCacheInterceptor" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>com.*.service.*find.*</value>
+				<value>com.*.service.*load.*</value>
+				<value>com.*.service.*get.*</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="methodCacheAdvicePointCut"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice">
+			<ref local="methodCacheAfterAdvice" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>com.*.service.*update.*</value>
+				<value>com.*.service.*save.*</value>
+				<value>com.*.service.*create.*</value>
+				<value>com.*.service.*delete.*</value>
+				<value>com.*.service.*remove.*</value>
+			</list>
+		</property>
+	</bean>
+</beans>
