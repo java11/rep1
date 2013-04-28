@@ -1,0 +1,2 @@
+http://www.blogjava.net/myyate/articles/Struts2_source_java.html
+http://java.chinaitlab.com/special/struts2/
