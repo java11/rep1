@@ -6,5 +6,6 @@ public class Test2 {
 		String str = "ppp";
 		String[] split = str.split("_");
 		System.out.println(split[0]);
+		System.out.println("ddddd");
 	}
 }
