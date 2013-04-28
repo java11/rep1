@@ -21,7 +21,7 @@
 	System.out.println(System.getProperty("java.io.tmpdir"));
 	
 	-->
-	<diskStore path="D:/cache" />
+	<diskStore path="/cache" />
 	<cache name="ehcache1" overflowToDisk="true" eternal="false" timeToIdleSeconds="300" 
 		timeToLiveSeconds="600" maxElementsInMemory="1000" maxElementsOnDisk="0" 
 		diskPersistent="true" diskExpiryThreadIntervalSeconds="300" diskSpoolBufferSizeMB="100" 
