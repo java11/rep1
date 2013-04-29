@@ -54,22 +54,66 @@ public class PrivilegeManagerAction extends BaseAction{
 	public void getPriOfUser() {
 		if(StringUtils.isBlank(userid)){
 			HttpSession session = getRequest().getSession();
-			Users user = (Users)session.getAttribute("user");
+			Users user = (Users)session.getAttribute(Constants.CURRENT_USER);
+			if(user != null){
+				userid = (user).getUserid() + "";
+				List<UsersResourse> userPower = (List<UsersResourse>) session.getAttribute(Constants.USER_POWER_SOURCE_DATA);
+				
+				StringBuffer treeData = new TreeBuilder().getTreeData(userPower, 1);
+				String treeDataStr = treeData.toString().replace(", \"children\": null" , "");
+				
+				UtilsLog.LOG.info(treeDataStr);
+				PagesUtil.outDataToPage(treeDataStr);
+			}
+		}
+	}
+	public void getPriOfUser2() {
+		if(StringUtils.isBlank(userid)){
+			HttpSession session = getRequest().getSession();
+			Users user = (Users)session.getAttribute(Constants.CURRENT_USER);
 			if(user != null){
 				userid = (user).getUserid() + "";
 				List<UsersResourse> userPower = pmService.getPriOfUser(userid);
-				Map<String, String> userUrlMap = new HashMap<String,String>();
+//				Map<String, String> userUrlMap = new HashMap<String,String>();
+//				for (UsersResourse usersResourse : userPower) {
+//					userUrlMap.put(String.valueOf(usersResourse.getPriid()) + "." + 0, usersResourse.getUrl());
+//					if(usersResourse.getTag() != null){
+//						String[] tags = usersResourse.getTag().split(",");
+//						int i = 1;
+//						for (String tag : tags) {
+//							userUrlMap.put(String.valueOf(usersResourse.getPriid()) + "." + i, tag);
+//							i++;
+//						}
+//					}
+//				}
+//				session.setAttribute(Constants.USER_POWER, userUrlMap);	
+				
+				Map<Integer, String> userUrlMap = new HashMap<Integer,String>();
+				Map<String, String> userTagMap = new HashMap<String,String>();
+
+				//存储所有页面连接urlMap
+				for (UsersResourse usersResourse : userPower) {
+					userUrlMap.put(usersResourse.getPriid(), usersResourse.getUrl());
+				}
+				
 				for (UsersResourse usersResourse : userPower) {
 					if(usersResourse.getTag() != null){
 						String[] tags = usersResourse.getTag().split(",");
 						int i = 1;
 						for (String tag : tags) {
-							userUrlMap.put(String.valueOf(usersResourse.getPriid()) + "." + i, tag);
+							userTagMap.put(String.valueOf(usersResourse.getPriid()) + "." + i, tag);
 							i++;
 						}
-					}
+					}				
 				}
-				session.setAttribute(Constants.USER_POWER, userUrlMap);	
+				
+				
+				
+				session.setAttribute(Constants.USER_POWER_TAG, userTagMap);	
+				session.setAttribute(Constants.USER_POWER_URL, userUrlMap);	
+				
+				
+				
 				
 				StringBuffer treeData = new TreeBuilder().getTreeData(userPower, 1);
 				String treeDataStr = treeData.toString().replace(", \"children\": null" , "");

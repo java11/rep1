@@ -14,9 +14,10 @@ public class CacheHelp {
 	@Resource(name = "methodCache")
 	private  Cache cache;
 	
-	public  void clearCache(){
+	public void clearCache(){
+		
 		cache.removeAll();
-		log.debug("cache removeAll.");
+		log.info("cache removeAll.");
 	}
 	
 	

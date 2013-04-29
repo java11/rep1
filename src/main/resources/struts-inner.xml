@@ -15,7 +15,7 @@
 						warn</param>
 				</interceptor-ref>
 				<interceptor-ref name="authority">
-					<param name="excludeMethods">login</param>  
+					<param name="excludeMethods">index</param>
 				</interceptor-ref>
 				<interceptor-ref name="defaultStack"></interceptor-ref>
 			</interceptor-stack>
@@ -24,19 +24,20 @@
 
 
 		<global-results>
-			<result name="login">/app/login.jsp</result>
+			<result name="login">/WEB-INF/app/login.jsp</result>
 			<result name="access_deny">/common/error/access_deny.jsp</result>
 		</global-results>
 
 		<global-exception-mappings>
 			<exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>
 		</global-exception-mappings>
-		
+
 		<!-- 通用配置action: inner -->
 		<action name="*_*" class="{1}Action" method="{2}">
-			<result name="success" >/${redirectPage}</result>
-			<result name="success_redirect" type="redirect">/${redirectPage}</result>
+			<result name="success">/WEB-INF/${redirectPage}</result>
+			<result name="redirect" type="redirect">/${redirectPage}</result>
+			<result name="redirectAction" type="redirectAction">/${redirectPage}</result>
 		</action>
-		
+
 	</package>
 </struts>

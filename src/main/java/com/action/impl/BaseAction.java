@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.utils.Constants;
 
 public class BaseAction extends ActionSupport {
 	/**
@@ -13,7 +12,7 @@ public class BaseAction extends ActionSupport {
 	private static final long serialVersionUID = -1149467570434364013L;
 	protected String redirectTpye;
 	protected String redirectPage;
-	
+
 	public String getRedirectPage() {
 		return redirectPage;
 	}
@@ -30,7 +29,6 @@ public class BaseAction extends ActionSupport {
 		return ServletActionContext.getResponse();
 	}
 
-	
 	public String getRedirectTpye() {
 		return redirectTpye;
 	}
@@ -39,14 +37,12 @@ public class BaseAction extends ActionSupport {
 		this.redirectTpye = redirectTpye;
 	}
 
-	
 	public String getReturn() {
-		if(redirectTpye != null && redirectTpye.equals(Constants.SUCCESS_TYPE_REDIRECT)){
-			return Constants.SUCCESS_TYPE_REDIRECT;
+		if (redirectTpye != null) {
+			return redirectTpye;
 		}
-		
+
 		return SUCCESS;
 	}
 
-	
 }
