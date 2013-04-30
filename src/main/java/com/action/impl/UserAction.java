@@ -45,8 +45,7 @@ public class UserAction extends BaseAction {
 
 	public String login() {
 		if (user == null) {
-			addFieldError("validateError", "user is null.");
-			return getReturn();
+			return Action.LOGIN;
 		}
 
 		String msg;
@@ -57,16 +56,19 @@ public class UserAction extends BaseAction {
 				if (StringUtils.isBlank(user2.getIndexPage())) {
 					user2.setIndexPage(redirectPage);
 				}
-				getRequest().getSession().setAttribute(Constants.CURRENT_USER, user2);
+				getRequest().getSession().setAttribute(Constants.CURRENT_USER,
+						user2);
 				HttpServletResponse response = ServletActionContext
 						.getResponse();
-				CookieTool.addCookie(response, "username", user.getUsername(),
-						600);
-				CookieTool.addCookie(response, "password", user.getPassword(),
-						600);
+//				CookieTool.addCookie(response, "username", user.getUsername(),
+//						600);
+//				CookieTool.addCookie(response, "password", user.getPassword(),
+//						600);
 
 				// 查询用户权限
 				getPriOfUser(user2.getUserid() + "");
+				
+				setRedirectPage("/index.jsp");
 
 				return getReturn();
 			} else {
@@ -82,49 +84,17 @@ public class UserAction extends BaseAction {
 	}
 
 	public String index() {
-		Users currentUser = (Users) getRequest().getSession().getAttribute(Constants.CURRENT_USER);
+		Users currentUser = (Users) getRequest().getSession().getAttribute(
+				Constants.CURRENT_USER);
 
-		if(currentUser != null){
+		if (currentUser != null) {
 			setRedirectPage(currentUser.getIndexPage());
 			return SUCCESS;
-		}else{
-			if (user == null) {
-				return Action.LOGIN;
-			}
-
-			String msg;
-			Users user2 = userService.findUser(user.getUsername());
-
-			if (user2 != null) {
-				if (user2.getPassword().equals(user.getPassword())) {
-					if (StringUtils.isBlank(user2.getIndexPage())) {
-						user2.setIndexPage(redirectPage);
-					}
-					getRequest().getSession().setAttribute(Constants.CURRENT_USER, user2);
-					HttpServletResponse response = ServletActionContext
-							.getResponse();
-					CookieTool.addCookie(response, "username", user.getUsername(),
-							600);
-					CookieTool.addCookie(response, "password", user.getPassword(),
-							600);
-
-					// 查询用户权限
-					getPriOfUser(user2.getUserid() + "");
-
-					return getReturn();
-				} else {
-					msg = "user password is wrong.";
-				}
-			} else {
-				msg = "user not exist.";
-			}
-			redirectTpye = "";
-			addFieldError("validateError", msg);
-
+		} else {
 			return Action.LOGIN;
 		}
 	}
-	
+
 	public String logout() {
 		getRequest().getSession().removeAttribute(Constants.CURRENT_USER);
 		// CookieTool.deleteCookie(request, response, "username");

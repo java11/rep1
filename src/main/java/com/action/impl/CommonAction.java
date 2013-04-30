@@ -6,15 +6,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.core.cache.CacheHelp;
-import com.opensymphony.xwork2.Action;
 import com.utils.PagesUtil;
+
 
 @Scope("prototype")
 @Controller
-public class CommonAction extends BaseAction {
+public class CommonAction extends BaseAction{
 
 	@Resource
-	CacheHelp cacheHelp;
+	private CacheHelp cacheHelp;
 	
 	/**
 	 * 
@@ -26,9 +26,4 @@ public class CommonAction extends BaseAction {
 		PagesUtil.outDataToPage("ok");
 	}
 
-	public String index() {
-		System.out.println("------====------" + redirectPage);
-		setRedirectPage(redirectPage);
-		return Action.SUCCESS;
-	}
 }

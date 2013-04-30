@@ -23,14 +23,14 @@ body {
 		<font style="font-weight: bold;	margin-left: 200px;color: #666666;">登录您的账号</font>
 	</div>
 	<center>
-		<form action="${actionPath}/user_index" method="post" id="loginForm">
+		<form action="${actionPath}/user_login" method="post" id="loginForm">
 			<div style="margin-top:20px;">
 				<font color="red" id="error_msg" style="font-size: 12px;"> <s:property value="errors['validateError'][0]" /> </font>
 				<div><input type="text" name="user.username" title="请输入您的账号" style="padding: 12px 0 14px 9px;height: 15px;font-size:18px;width:260px;"></div>
 				<div style="margin-top:10px;"><input type="password" name="user.password" title="请输入您的密码" style="padding: 12px 0 14px 9px;height: 15px;font-size:18px;width:260px;"></div>
 				<div class="button-zxf" style="height:45px;width:150px;margin-top:10px;margin-left:120px;; float: none;" onclick="login()"><a href="#" style="line-height:45px; color: #FFFFFF;">登录</a></div>
 				<input type="hidden" name="redirectPage" value="/app/index.jsp">
-<!-- 				<input type="hidden" name="redirectTpye" value="redirect"> -->
+				<input type="hidden" name="redirectTpye" value="redirect">
 			</div>
 		</form>
 	</center>

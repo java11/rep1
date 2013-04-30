@@ -15,7 +15,7 @@
 						warn</param>
 				</interceptor-ref>
 				<interceptor-ref name="authority">
-					<param name="excludeMethods">index</param>
+					<param name="excludeMethods">login,index</param>
 				</interceptor-ref>
 				<interceptor-ref name="defaultStack"></interceptor-ref>
 			</interceptor-stack>
