@@ -33,6 +33,10 @@ public class IndexAction extends BaseAction {
 				.getAttribute(Constants.USER_POWER_URL);
 		
 		String page = urlMap.get(Integer.valueOf(param));
+		if(page == null){
+			//转到访问拒绝页面
+			//setRedirectPage(page);
+		}
 
 		setRedirectPage(page);
 

@@ -24,6 +24,8 @@ public class Constants {
 	public static String USER_POWER_URL= "userpowerurl";
 	public static String USER_BASE_POWER= "privilegeManager_getPriOfUser";
 	public static String CURRENT_USER= "curren_user";
+	//是否启用鉴权
+	public static boolean ENABLE_AUTHENTICATION = true;
 	
 	
 	/** 哪一行开始是正式数据  */

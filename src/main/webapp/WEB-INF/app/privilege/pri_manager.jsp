@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="apptags" tagdir="/WEB-INF/tags" %>
-<apptags:setPath/>
+<%@ include file="/WEB-INF/app/include.inc.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>

@@ -6,24 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.entity.Users;
+import com.entity.UsersResourse;
 import com.opensymphony.xwork2.Action;
 import com.service.interfaces.PrivilegeManagerService;
 import com.service.interfaces.UserService;
 import com.utils.Constants;
-import com.utils.CookieTool;
 import com.utils.JsonObjectUtils;
 import com.utils.PagesUtil;
 import com.utils.UtilsLog;
-import com.entity.Users;
-import com.entity.UsersResourse;
 
 @Scope("prototype")
 @Controller
@@ -58,16 +55,10 @@ public class UserAction extends BaseAction {
 				}
 				getRequest().getSession().setAttribute(Constants.CURRENT_USER,
 						user2);
-				HttpServletResponse response = ServletActionContext
-						.getResponse();
-//				CookieTool.addCookie(response, "username", user.getUsername(),
-//						600);
-//				CookieTool.addCookie(response, "password", user.getPassword(),
-//						600);
 
 				// 查询用户权限
 				getPriOfUser(user2.getUserid() + "");
-				
+
 				setRedirectPage("/index.jsp");
 
 				return getReturn();
@@ -97,9 +88,7 @@ public class UserAction extends BaseAction {
 
 	public String logout() {
 		getRequest().getSession().removeAttribute(Constants.CURRENT_USER);
-		// CookieTool.deleteCookie(request, response, "username");
-		// CookieTool.deleteCookie(request, response, "password");
-		return "login";
+		return Action.LOGIN;
 	}
 
 	public void findUserByRole() {
@@ -132,10 +121,8 @@ public class UserAction extends BaseAction {
 		for (UsersResourse usersResourse : userPower) {
 			if (usersResourse.getTag() != null) {
 				String[] tags = usersResourse.getTag().split(",");
-				int i = 1;
 				for (String tag : tags) {
 					userTagList.add(tag);
-					i++;
 				}
 			}
 		}

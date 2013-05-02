@@ -27,7 +27,7 @@ public class AuthorityInterceptor extends MethodFilterInterceptor {
 		HttpSession session = request.getSession();
 		Users user = (Users) session.getAttribute(Constants.CURRENT_USER);
 
-		if (user != null) {
+		if ( Constants.ENABLE_AUTHENTICATION && user != null) {
 			/**
 			 * 鉴权: 此程序只对action进行鉴权,对action的鉴权放在com.action.Interceptor.
 			 * AuthorityInterceptor里 目前只对action鉴权，每堆方法鉴权
