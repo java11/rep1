@@ -1,21 +1,20 @@
 package com.service.impl;
 
-import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.dao.interfaces.PrivilegesDao;
 import com.entity.Privileges;
 import com.service.interfaces.PrivilegeService;
 
 @Service("PrivilegeService")
-public class PrivilegeServiceImpl extends BaseServiceImpl implements PrivilegeService {
-	
+public class PrivilegeServiceImpl extends BaseServiceImpl implements
+		PrivilegeService {
+
+	@Resource
 	private PrivilegesDao privilegeDao;
 
-	@PostConstruct
-	public void UserServiceImpls() {
-		privilegeDao = sqlSession.getMapper(PrivilegesDao.class);
-	}
-	
 	@Override
 	public boolean save(Privileges pri) {
 		privilegeDao.save(pri);
@@ -31,8 +30,8 @@ public class PrivilegeServiceImpl extends BaseServiceImpl implements PrivilegeSe
 	@Override
 	public boolean batchDel(String priid) {
 		String[] rolesid = com.utils.StringUtils.stringToArray(priid, ",");
-		
-		if(rolesid == null){
+
+		if (rolesid == null) {
 			return true;
 		}
 		privilegeDao.batchRemove(rolesid);
@@ -42,7 +41,7 @@ public class PrivilegeServiceImpl extends BaseServiceImpl implements PrivilegeSe
 	@Override
 	public boolean update(Privileges pri) {
 		privilegeDao.update(pri);
-		
+
 		return false;
 	}
 

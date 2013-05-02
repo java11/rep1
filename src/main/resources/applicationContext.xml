@@ -23,6 +23,7 @@
 
 	<context:component-scan base-package="com.dao.impl,com.service.impl,com.action.impl,com.core.cache" />
 
+
 	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
 		<property name="driver">
 			<value>${jdbc.driverClassName}</value>
@@ -64,8 +65,11 @@
 		</property>
 	</bean>
 
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.dao.interfaces" />
+    </bean>
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="mapperLocations" value="classpath:mybatis-mappers/*.xml" />
+ 		<property name="mapperLocations" value="classpath:mybatis-mappers/*.xml" />
 		<!-- <property name="configLocation" value="classpath:mybatis-config.xml" 
 			/> -->
 		<property name="typeAliasesPackage" value="com.entity" />
@@ -108,63 +112,4 @@
 		<aop:pointcut id="txPointcut" expression="execution(* *..*Service.*(..))" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
 	</aop:config>
-
-	
-	
-	
-	
-		<bean id="cacheManager"
-		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="configLocation">
-			<value>classpath:ehcache.xml</value>
-		</property>
-	</bean>
-
-	<bean id="methodCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-		<property name="cacheManager">
-			<ref local="cacheManager" />
-		</property>
-		<property name="cacheName">
-			<value>ehcache1</value>
-		</property>
-	</bean>
-
-	<bean id="methodCacheInterceptor" class="com.core.cache.MethodCacheInterceptor">
-		<property name="cache">
-			<ref local="methodCache" />
-		</property>
-	</bean>
-	<bean id="methodCacheAfterAdvice" class="com.core.cache.MethodCacheAfterAdvice">
-		<property name="cache">
-			<ref local="methodCache" />
-		</property>
-	</bean>
-	<bean id="methodCachePointCut"
-		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
-		<property name="advice">
-			<ref local="methodCacheInterceptor" />
-		</property>
-		<property name="patterns">
-			<list>
-				<value>com.*.service.*find.*</value>
-				<value>com.*.service.*load.*</value>
-				<value>com.*.service.*get.*</value>
-			</list>
-		</property>
-	</bean>
-	<bean id="methodCacheAdvicePointCut"
-		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
-		<property name="advice">
-			<ref local="methodCacheAfterAdvice" />
-		</property>
-		<property name="patterns">
-			<list>
-				<value>com.*.service.*update.*</value>
-				<value>com.*.service.*save.*</value>
-				<value>com.*.service.*create.*</value>
-				<value>com.*.service.*delete.*</value>
-				<value>com.*.service.*remove.*</value>
-			</list>
-		</property>
-	</bean>
 </beans>

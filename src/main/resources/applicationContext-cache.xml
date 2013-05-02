@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	
+	
+	
+		<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation">
+			<value>classpath:ehcache.xml</value>
+		</property>
+	</bean>
+
+	<bean id="methodCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager">
+			<ref local="cacheManager" />
+		</property>
+		<property name="cacheName">
+			<value>ehcache1</value>
+		</property>
+	</bean>
+
+	<bean id="methodCacheInterceptor" class="com.core.cache.MethodCacheInterceptor">
+		<property name="cache">
+			<ref local="methodCache" />
+		</property>
+	</bean>
+	<bean id="methodCacheAfterAdvice" class="com.core.cache.MethodCacheAfterAdvice">
+		<property name="cache">
+			<ref local="methodCache" />
+		</property>
+	</bean>
+	<bean id="methodCachePointCut"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice">
+			<ref local="methodCacheInterceptor" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>com.*.service.*find.*</value>
+				<value>com.*.service.*load.*</value>
+				<value>com.*.service.*get.*</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="methodCacheAdvicePointCut"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice">
+			<ref local="methodCacheAfterAdvice" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>com.*.service.*update.*</value>
+				<value>com.*.service.*save.*</value>
+				<value>com.*.service.*create.*</value>
+				<value>com.*.service.*delete.*</value>
+				<value>com.*.service.*del.*</value>
+				<value>com.*.service.*remove.*</value>
+			</list>
+		</property>
+	</bean>
+</beans>
